@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "670435649523",
+    "firebase_url": "https://lojaoline-feb31.firebaseio.com",
+    "project_id": "lojaoline-feb31",
+    "storage_bucket": "lojaoline-feb31.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:670435649523:android:59efafcbea6db339",
+        "android_client_info": {
+          "package_name": "com.example.loja_virtual"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "670435649523-me4k0218f9t2802bvov48ibb6n7sr5t4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXwDPqGX1lHBpd2V5B1gCx18s27qEyBjc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "670435649523-me4k0218f9t2802bvov48ibb6n7sr5t4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
