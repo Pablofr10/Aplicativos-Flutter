@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:loja_virtual/datas/product_data.dart';
 import 'package:loja_virtual/tiles/product_tile.dart';
+import 'package:loja_virtual/widgets/cart_button.dart';
 
 class CategoryScreen extends StatelessWidget {
   final DocumentSnapshot snapshot;
@@ -54,22 +55,25 @@ class CategoryScreen extends StatelessWidget {
                           ),
                           itemCount: snapshot.data.documents.length,
                           itemBuilder: (context, index) {
-                            return ProductTile(
-                                "grid",
-                                ProductData.fromDocument(
-                                    snapshot.data.documents[index]));
+                            ProductData data = ProductData.fromDocument(
+                                snapshot.data.documents[index]);
+                                data.category = this.snapshot.documentID;
+
+                            return ProductTile("grid", data);
                           }),
                       ListView.builder(
                           padding: EdgeInsets.all(4.0),
                           itemCount: snapshot.data.documents.length,
                           itemBuilder: (context, index) {
+                            ProductData data = ProductData.fromDocument(
+                                snapshot.data.documents[index]);
+                            data.category = this.snapshot.documentID;
                             return ProductTile(
-                                "list",
-                                ProductData.fromDocument(
-                                    snapshot.data.documents[index]));
+                                "list",data);
                           }),
                     ]);
             }),
+        floatingActionButton: CartButton(),
       ),
     );
   }
