@@ -23,6 +23,10 @@ class CartModel extends Model {
   static CartModel of(BuildContext context) =>
       ScopedModel.of<CartModel>(context);
 
+  void updatePrices(){
+    notifyListeners();
+  }
+
   void addCartItem(CartProduct cartProduct) {
     products.add(cartProduct);
 
@@ -80,6 +84,72 @@ class CartModel extends Model {
   void setCoupon(String couponCode, int discountPercentage){
     this.couponCode = couponCode;
     this.discountPercentage = discountPercentage;
+  }
+
+  double getProductsPrice(){
+    double price = 0.0;
+    for(CartProduct c in products){
+      if(c.productData != null){
+        price += c.quantity * c.productData.price;
+      }
+    }
+    return price;
+  }
+
+  double getDiscount(){
+      return getProductsPrice() * (discountPercentage / 100);
+  }
+
+  double getShipPrice(){
+      return 9.99;
+  }
+
+  Future<String> finishOrder() async{
+    if(products.length == 0) return null;
+
+    isLoading = true;
+    notifyListeners();
+
+    double productsPrice = getProductsPrice();
+    double discount = getDiscount();
+    double shipPrice = getShipPrice();
+
+    DocumentReference refOder = await Firestore.instance.collection("orders").add(
+      {
+        "clientId": user.firebaseUser.uid,
+        "products": products.map((cartProduct)=>cartProduct.toMap()).toList(),
+        "shipPrice": shipPrice,
+        "productPrice": productsPrice,
+        "discount": discount,
+        "totalPrice": productsPrice - discount + shipPrice,
+        "status": 1,
+      }
+      );
+
+    Firestore.instance.collection("users").document(user.firebaseUser.uid)
+        .collection("orders").document(refOder.documentID).setData(
+          {
+            "oderId": refOder.documentID
+          }
+    );
+
+    QuerySnapshot query = await Firestore.instance.collection("users").document(user.firebaseUser.uid)
+      .collection("cart").getDocuments();
+
+    for(DocumentSnapshot doc in query.documents){
+      doc.reference.delete();
+    }
+
+    products.clear();
+
+    couponCode = null;
+    discountPercentage = 0;
+
+    isLoading = false;
+    notifyListeners();
+
+    return refOder.documentID;
+
   }
 
   void _loadCartItems() async{
