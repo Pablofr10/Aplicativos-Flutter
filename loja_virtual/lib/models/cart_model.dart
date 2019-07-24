@@ -5,9 +5,13 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter/material.dart';
 
 class CartModel extends Model {
+
   UserModel user;
 
   List<CartProduct> products = [];
+
+  String couponCode;
+  int discountPercentage = 0;
 
   CartModel(this.user){
     if(user.isLoggedIn())
@@ -71,6 +75,11 @@ class CartModel extends Model {
         .updateData(cartProduct.toMap());
 
     notifyListeners();
+  }
+
+  void setCoupon(String couponCode, int discountPercentage){
+    this.couponCode = couponCode;
+    this.discountPercentage = discountPercentage;
   }
 
   void _loadCartItems() async{
