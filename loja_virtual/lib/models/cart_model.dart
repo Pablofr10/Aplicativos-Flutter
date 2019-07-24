@@ -75,8 +75,7 @@ class CartModel extends Model {
 
   void _loadCartItems() async{
 
-    QuerySnapshot query = await Firestore.instance.collection("users").document(user.firebaseUser.uid).collection("cart")
-        .getDocuments();
+    QuerySnapshot query = await Firestore.instance.collection("users").document(user.firebaseUser.uid).collection("cart").getDocuments();
 
     products = query.documents.map((doc) => CartProduct.fromDocument(doc)).toList();
 
