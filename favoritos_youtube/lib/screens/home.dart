@@ -1,6 +1,9 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:favoritos_youtube/blocs/favorite_bloc.dart';
 import 'package:favoritos_youtube/blocs/video_bloc.dart';
 import 'package:favoritos_youtube/delegates/data_seach.dart';
+import 'package:favoritos_youtube/models/video.dart';
+import 'package:favoritos_youtube/screens/favorites.dart';
 import 'package:favoritos_youtube/widget/video_tile.dart';
 import 'package:flutter/material.dart';
 
@@ -19,14 +22,24 @@ class Home extends StatelessWidget {
         actions: <Widget>[
           Align(
             alignment: Alignment.center,
-            child: Text('0', style: TextStyle(color: Colors.white, fontSize: 16.0),),
+            child: StreamBuilder<Map<String, Video>>(
+              stream: BlocProvider.of<FavoriteBloc>(context).outFav,
+                builder: (context, snapshot){
+                  if(snapshot.hasData) return Text('${snapshot.data.length}');
+                  else return Container();
+                }
+            ),
           ),
           IconButton(
               icon: Icon(
                 Icons.star,
                 color: Colors.amber,
               ),
-              onPressed: () {}),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context)=> Favorites())
+                );
+              }),
           IconButton(
               icon: Icon(
                 Icons.search,
@@ -42,17 +55,26 @@ class Home extends StatelessWidget {
       backgroundColor: Colors.black,
       body: StreamBuilder(
         stream: bloc.outVideos,
+          initialData: [],
           builder: (context, snapshot){
           if(snapshot.hasData){
             return ListView.builder(
                 itemBuilder: (context, index){
-                  //if(index < snapshot.data.lenght) {
+                  if(index < snapshot.data.length) {
                     return VideoTile(snapshot.data[index]);
-                  //}else{
-                   // return
-                  //},
+                  }else if(index > 1){
+                    bloc.inSearch.add(null);
+                    return Container(
+                      height: 40,
+                      width: 40,
+                      alignment: Alignment.center,
+                      child: Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.red),),),
+                    );
+                  }else{
+                    return Container();
+                  }
                 },
-              itemCount: snapshot.data.lenght + 1,
+              itemCount: snapshot.data.length + 1,
             );
           }else{
             return Container();

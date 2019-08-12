@@ -24,7 +24,7 @@ class Api{
 
   Future<List<Video>> nextPage() async{
     http.Response response = await http.get(
-        "https://www.googleapis.com/youtube/v3/search?part=snippet&q=$_search&type=video&key=$API_KEY&maxResults=10&pageToken=$_nextToken""
+        "https://www.googleapis.com/youtube/v3/search?part=snippet&q=$_search&type=video&key=$API_KEY&maxResults=10&pageToken=$_nextToken"
     );
 
     return decode(response);
